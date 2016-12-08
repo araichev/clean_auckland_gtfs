@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 setup(
     name='clean_auckland_gtfs',
     version='0.0.0',
-    description='Python 3.4+ tools for cleaning Auckland Transport GTFS feeds',
+    description='Python 3.5+ tools for cleaning Auckland Transport GTFS feeds',
     long_description=readme,
     author='Alex Raichev',
     author_email='alex@raichev.net',
