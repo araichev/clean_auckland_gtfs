@@ -1,0 +1,8 @@
+gtfstk==6.1.0
+numpy==1.11.2
+pandas==0.19.1
+python-dateutil==2.6.0
+pytz==2016.10
+Shapely==1.5.17
+six==1.10.0
+utm==0.4.1
