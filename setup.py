@@ -16,7 +16,7 @@ setup(
     author_email='alex@raichev.net',
     url='https://github.com/araichev/clean_auckland_gtfs',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs')),
     install_requires=[
         'gtfstk>=6.1.0',
     ],
