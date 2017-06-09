@@ -18,8 +18,7 @@ SCHOOL_STRINGS = [
   'Sacred Heart'
   ]
 
-def drop_school_routes(feed, max_trips=4, 
-  school_strings=SCHOOL_STRINGS):
+def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
     """
     Given a GTFSTK Feed object, drop routes that appear to be school 
     routes, along with their associated trips and stop times, 
