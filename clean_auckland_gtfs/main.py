@@ -1,13 +1,12 @@
-import pandas as pd
 import gtfstk as gt
 
 
 SCHOOL_STRINGS = [
-  'college', 
-  'intermediate', 
-  'grammar', 
+  'college',
+  'intermediate',
+  'grammar',
   'primary',
-  'high', 
+  'high',
   'school',
   'sch',
   'boys',
@@ -20,8 +19,8 @@ SCHOOL_STRINGS = [
 
 def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
     """
-    Given a GTFSTK Feed object, drop routes that appear to be school 
-    routes, along with their associated trips and stop times, 
+    Given a GTFSTK Feed object, drop routes that appear to be school
+    routes, along with their associated trips and stop times,
     and return the resulting new feed.
 
     School route criteria, all of which must be satisfied:
@@ -34,7 +33,7 @@ def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
 
     # Route is a bus
     cond_bus = r['route_type'] == 3
-        
+
     # Route has at most max_trips
     t = feed.trips.groupby('route_id').count().reset_index()
     rids = t[t['trip_id'] <= max_trips]['route_id'].copy()
@@ -44,7 +43,7 @@ def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
     cond_schoolish_name = False
     for s in school_strings:
         cond_schoolish_name |= r['route_long_name'].str.contains(s, case=False)
-    
+
     # Conjoin criteria
     cond = cond_bus & cond_max_trips & cond_schoolish_name
 
@@ -59,23 +58,28 @@ def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
     st = feed.stop_times
     feed.stop_times = st[st['trip_id'].isin(feed.trips['trip_id'])].copy()
 
-    return feed 
+    return feed
 
 def clean(feed):
     """
-    Given a GTFSTK object representing an Auckland GTFS feed, drop the school routes, aggregate the routes by route_short_name, clean the stop codes by adding leading zeros where necessary, and return the resulting feed.
+    Given a GTFSTK object representing an Auckland GTFS feed,
+    drop the school routes, aggregate the routes by route_short_name,
+    drop zombie stops, trips, etc. (via ``gtfstk.drop_zombies),
+    clean the stop codes by adding leading zeros where necessary,
+    and return the resulting feed.
     """
     feed = drop_school_routes(feed)
     feed = gt.aggregate_routes(feed)
+    feed = gt.drop_zombies(feed)
 
     # Add leading zeros to stop codes
     def clean_stop_code(x):
         n = len(x)
-        if n < 4 :
+        if n < 4:
             x = '0'*(4 - n) + x
         return x
-    
-    s = feed.stops 
+
+    s = feed.stops
     s['stop_code'] = s['stop_code'].map(clean_stop_code)
     feed.stops = s
 

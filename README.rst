@@ -7,6 +7,7 @@ Cleaning involves
 
 - Dropping school routes
 - Aggregating GTFS routes by route short name, so that GTFS routes match public-facing routes. Auckland does not have 2500 transit routes!
+- Dropping stops with no stop times, trips with no stop times, shapes with no trips, routes with no trips, and services with no trips, in that order.
 
 
 Installation
@@ -33,6 +34,11 @@ Authors
 
 History
 ========
+
+0.2.0, 2017-10-17
+-------------------
+- Dropped zombie stops, trips, etc. in ``main.clean`` function
+
 
 0.1.0, 2016-06-07
 -------------------
