@@ -2,19 +2,21 @@ import gtfstk as gt
 
 
 SCHOOL_STRINGS = [
-  'college',
-  'intermediate',
-  'grammar',
-  'primary',
-  'high',
-  'school',
-  'sch',
-  'boys',
-  'girls',
-  'Rosmini',
-  'St Marks',
-  'Clendon to Manurewa and Greenmeadows',
-  'Sacred Heart'
+  "college",
+  "intermediate",
+  "grammar",
+  "primary",
+  "high",
+  "school",
+  "sch",
+  "boys",
+  "girls",
+  "Rosmini",
+  "St Marks",
+  "Clendon to Manurewa and Greenmeadows",
+  "Sacred Heart",
+  "St Josephs",
+  "Ponsonby Int",
   ]
 
 def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
@@ -32,17 +34,17 @@ def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
     r = feed.routes
 
     # Route is a bus
-    cond_bus = r['route_type'] == 3
+    cond_bus = r["route_type"] == 3
 
     # Route has at most max_trips
-    t = feed.trips.groupby('route_id').count().reset_index()
-    rids = t[t['trip_id'] <= max_trips]['route_id'].copy()
-    cond_max_trips = r['route_id'].isin(rids)
+    t = feed.trips.groupby("route_id").count().reset_index()
+    rids = t[t["trip_id"] <= max_trips]["route_id"].copy()
+    cond_max_trips = r["route_id"].isin(rids)
 
     # Route long name contains school-like word
     cond_schoolish_name = False
     for s in school_strings:
-        cond_schoolish_name |= r['route_long_name'].str.contains(s, case=False)
+        cond_schoolish_name |= r["route_long_name"].str.contains(s, case=False)
 
     # Conjoin criteria
     cond = cond_bus & cond_max_trips & cond_schoolish_name
@@ -51,12 +53,12 @@ def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
     feed.routes = r[~cond].copy()
 
     # Get non-school trips
-    rids = feed.routes['route_id']
-    feed.trips = feed.trips[feed.trips['route_id'].isin(rids)].copy()
+    rids = feed.routes["route_id"]
+    feed.trips = feed.trips[feed.trips["route_id"].isin(rids)].copy()
 
     # Remove school stop times
     st = feed.stop_times
-    feed.stop_times = st[st['trip_id'].isin(feed.trips['trip_id'])].copy()
+    feed.stop_times = st[st["trip_id"].isin(feed.trips["trip_id"])].copy()
 
     return feed
 
@@ -76,11 +78,12 @@ def clean(feed):
     def clean_stop_code(x):
         n = len(x)
         if n < 4:
-            x = '0'*(4 - n) + x
+            x = "0"*(4 - n) + x
         return x
 
-    s = feed.stops
-    s['stop_code'] = s['stop_code'].map(clean_stop_code)
-    feed.stops = s
+    if "stop_code" in feed.stops.columns:
+      s = feed.stops
+      s["stop_code"] = s["stop_code"].map(clean_stop_code)
+      feed.stops = s
 
     return feed
