@@ -35,6 +35,12 @@ Authors
 Changes
 =======
 
+0.4.0, 2019-04-08
+-----------------
+- Removed "Stanmore Bay To Long Bay" and "Long Bay To Stanmore Bay" routes.
+- Removed accidental Tornado dependency.
+
+
 0.3.0, 2019-03-04
 -----------------
 - Switched to Poetry.

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clean_auckland_gtfs"
-version = "0.3.0"
+version = "0.4.0"
 description = "Python 3.6+ code for cleaning Auckland, New Zealand GTFS feeds"
 authors = ["Alex Raichev <araichev@mrcagney.com>"]
 license = "MIT"
@@ -8,7 +8,6 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.6"
 gtfstk = "^9.3"
-tornado = "=5.1.1"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0"

@@ -2,22 +2,24 @@ import gtfstk as gt
 
 
 SCHOOL_STRINGS = [
-  "college",
-  "intermediate",
-  "grammar",
-  "primary",
-  "high",
-  "school",
-  "sch",
-  "boys",
-  "girls",
-  "Rosmini",
-  "St Marks",
-  "Clendon to Manurewa and Greenmeadows",
-  "Sacred Heart",
-  "St Josephs",
-  "Ponsonby Int",
-  ]
+    "college",
+    "intermediate",
+    "grammar",
+    "primary",
+    "high",
+    "school",
+    "sch",
+    "boys",
+    "girls",
+    "Rosmini",
+    "St Marks",
+    "Clendon to Manurewa and Greenmeadows",
+    "Sacred Heart",
+    "St Josephs",
+    "Ponsonby Int",
+    "Long Bay To Stanmore Bay",
+    "Stanmore Bay To Long Bay",
+]
 
 def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
     """
