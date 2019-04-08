@@ -12,7 +12,7 @@ Cleaning involves
 
 Installation
 ============
-``poetry install --git https://github.com/araichev/clean_auckland_gtfs clean_auckland_gtfs``
+``poetry install clean_auckland_gtfs``
 
 
 Usage
