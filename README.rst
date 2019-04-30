@@ -12,7 +12,7 @@ Cleaning involves
 
 Installation
 ============
-``poetry install clean_auckland_gtfs``
+``pip install clean_auckland_gtfs``
 
 
 Usage
@@ -39,6 +39,7 @@ Changes
 -----------------
 - Removed "Stanmore Bay To Long Bay" and "Long Bay To Stanmore Bay" routes.
 - Removed accidental Tornado dependency.
+- Published to PyPI.
 
 
 0.3.0, 2019-03-04
