@@ -35,6 +35,11 @@ Authors
 Changes
 =======
 
+0.4.1, 2019-05-27
+-----------------
+- Updated requirements
+
+
 0.4.0, 2019-04-08
 -----------------
 - Removed "Stanmore Bay To Long Bay" and "Long Bay To Stanmore Bay" routes.
