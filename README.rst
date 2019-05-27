@@ -37,7 +37,7 @@ Changes
 
 0.4.1, 2019-05-27
 -----------------
-- Updated requirements
+- Updated requirements.
 
 
 0.4.0, 2019-04-08
