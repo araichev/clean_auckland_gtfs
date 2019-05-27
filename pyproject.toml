@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.6"
-gtfstk = "^9.3"
+gtfstk = "^10"
 
 [tool.poetry.dev-dependencies]
 jupyter = "^1.0"
