@@ -35,6 +35,12 @@ Authors
 Changes
 =======
 
+0.4.2, 2019-10-31
+-----------------
+- Updated requirements.
+- Made dropping school routes optional in function ``clean``.
+
+
 0.4.1, 2019-05-27
 -----------------
 - Updated requirements.
