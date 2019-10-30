@@ -1,4 +1,4 @@
-import gtfstk as gt
+import gtfs_kit as gk
 
 
 SCHOOL_STRINGS = [
@@ -64,17 +64,20 @@ def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
 
     return feed
 
-def clean(feed):
+def clean(feed, *, keep_school_routes=False):
     """
     Given a GTFSTK object representing an Auckland GTFS feed,
-    drop the school routes, aggregate the routes by route_short_name,
-    drop zombie stops, trips, etc. (via ``gtfstk.drop_zombies),
+    optionally drop the school routes (defaults to doing so),
+    aggregate the routes by route short name,
+    drop zombie stops, trips, etc. (via ``gtfs_kit.drop_zombies),
     clean the stop codes by adding leading zeros where necessary,
     and return the resulting feed.
     """
-    feed = drop_school_routes(feed)
-    feed = gt.aggregate_routes(feed)
-    feed = gt.drop_zombies(feed)
+    if not keep_school_routes:
+        feed = drop_school_routes(feed)
+
+    feed = gk.aggregate_routes(feed)
+    feed = gk.drop_zombies(feed)
 
     # Add leading zeros to stop codes
     def clean_stop_code(x):
