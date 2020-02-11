@@ -35,6 +35,11 @@ Authors
 Changes
 =======
 
+0.4.3, 2020-02-12
+-----------------
+- Updated dependencies.
+
+
 0.4.2, 2019-10-31
 -----------------
 - Updated requirements.
