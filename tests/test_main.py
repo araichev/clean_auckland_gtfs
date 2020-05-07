@@ -4,7 +4,7 @@ from .context import clean_auckland_gtfs, DATA_DIR
 from clean_auckland_gtfs import *
 
 
-feed = gk.read_gtfs(DATA_DIR/'raw_auckland_gtfs_20190221.zip', dist_units='km')
+feed = gk.read_feed(DATA_DIR/'raw_auckland_gtfs_20190221.zip', dist_units='km')
 
 def test_drop_school_routes():
     n = feed.routes.shape[0]
