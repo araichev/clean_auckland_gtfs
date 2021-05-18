@@ -1,6 +1,9 @@
 Clean Auckland GTFS
 *******************
-Some Python 3.6+ tools for cleaning Auckland Transport GTFS feeds.
+.. image:: https://travis-ci.org/mrcagney/clean_auckland_gtfs.svg?branch=master
+    :target: https://travis-ci.org/mrcagney/clean_auckland_gtfs
+
+Some Python 3.8+ tools for cleaning Auckland Transport GTFS feeds.
 Such feeds can be found on `Transit Feeds here <transitfeeds.com/p/auckland-transport/124>`_, for example.
 
 Cleaning involves
@@ -12,13 +15,13 @@ Cleaning involves
 
 Installation
 ============
-``pip install clean_auckland_gtfs``
+``poetry add clean_auckland_gtfs``
 
 
 Usage
 =====
 Use as a library.
-See the Jupyter notebook at ``ipynb/examples.ipynb`` for inspiration.
+See the Jupyter notebook at ``notebooks/examples.ipynb`` for inspiration.
 
 
 Notes
@@ -34,6 +37,13 @@ Authors
 
 Changes
 =======
+
+0.5.0, 2021-05-18
+-----------------
+- Upgraded to Python 3.9 and updated dependencies.
+- Modularized a bit more.
+- Updated school strings to search for.
+
 
 0.4.4, 2020-05-08
 -----------------

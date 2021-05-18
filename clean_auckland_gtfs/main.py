@@ -1,4 +1,6 @@
+from __future__ import annotations
 import gtfs_kit as gk
+import pandas as pd
 
 
 SCHOOL_STRINGS = [
@@ -11,6 +13,7 @@ SCHOOL_STRINGS = [
     "sch",
     "boys",
     "girls",
+] + [
     "Rosmini",
     "St Marks",
     "Clendon to Manurewa and Greenmeadows",
@@ -19,62 +22,108 @@ SCHOOL_STRINGS = [
     "Ponsonby Int",
     "Long Bay To Stanmore Bay",
     "Stanmore Bay To Long Bay",
+    "Sancta Maria",
+    "Our Lady Star Of The Sea",
+    "St Ignatius",
+    "St Thomas",
+    "Baradine",
 ]
 
-def drop_school_routes(feed, max_trips=4, school_strings=SCHOOL_STRINGS):
+def find_school_routes(
+    feed: gk.Feed,
+    school_max_ntrips:int=4,
+    school_strings:list[str]=SCHOOL_STRINGS,
+) -> pd.DataFrame:
     """
-    Given a GTFSTK Feed object, drop routes that appear to be school
-    routes, along with their associated trips and stop times,
-    and return the resulting new feed.
+    Given a GTFSTK Feed object, find all routes that appear to be school routes, and
+    return the resulting GTFS DataFrame of routes.
 
-    School route criteria, all of which must be satisfied:
+    The school route criteria, all of which must be satisfied, are:
 
-    - route is a bus
-    - route has at most ``max_trips`` trips
-    - route long name contains one of the strings in ``school_strings``
+    - the route is a bus
+    - the route has at most ``school_max_ntrips`` trips
+    - the route long name contains at least one of the strings in ``school_strings``
+
+    If an empty list of school strings is given, then ignore the route long name
+    criterion.
     """
-    r = feed.routes
-
     # Route is a bus
-    cond_bus = r["route_type"] == 3
+    school_routes = (
+        feed.routes
+        .loc[lambda x: x.route_type == 3]
+    )
 
-    # Route has at most max_trips
+    # Route has at most school_max_ntrips
     t = feed.trips.groupby("route_id").count().reset_index()
-    rids = t[t["trip_id"] <= max_trips]["route_id"].copy()
-    cond_max_trips = r["route_id"].isin(rids)
+    rids = t.loc[lambda x: x.trip_id <= school_max_ntrips, "route_id"]
+    school_routes = school_routes.loc[lambda x: x.route_id.isin(rids)]
 
     # Route long name contains school-like word
-    cond_schoolish_name = False
-    for s in school_strings:
-        cond_schoolish_name |= r["route_long_name"].str.contains(s, case=False)
+    if school_strings:
+        condition = False
+        for s in school_strings:
+            condition |= school_routes["route_long_name"].str.contains(s, case=False)
 
-    # Conjoin criteria
-    cond = cond_bus & cond_max_trips & cond_schoolish_name
+        school_routes = school_routes.loc[condition]
 
-    # Take complement to get non-school routes
-    feed.routes = r[~cond].copy()
+    return school_routes.copy()
 
-    # Get non-school trips
-    rids = feed.routes["route_id"]
-    feed.trips = feed.trips[feed.trips["route_id"].isin(rids)].copy()
+def drop_school_routes(
+    feed: gk.Feed,
+    school_max_ntrips:int=4,
+    school_strings:list[str]=SCHOOL_STRINGS,
+) -> gk.Feed:
+    """
+    Given a GTFSTK Feed object, drop all routes that appear to be school routes,
+    along with their associated trips, stop times, etc.,
+    and return the resulting new feed.
 
-    # Remove school stop times
+    The school route criteria, all of which must be satisfied, are:
+
+    - the route is a bus
+    - the route has at most ``school_max_ntrips`` trips
+    - the route long name contains at least one of the strings in ``school_strings``
+
+    If an empty list of school strings is given, then ignore the route long name
+    criterion.
+    """
+    school_routes = find_school_routes(feed, school_max_ntrips, school_strings)
+
+    # Subset feed non-school routes
+    feed.routes = feed.routes.loc[lambda x: ~x.route_id.isin(school_routes.route_id)].copy()
+
+    # Subset to non-school trips
+    rids = feed.routes.route_id
+    feed.trips = feed.trips.loc[lambda x: x.route_id.isin(rids)].copy()
+
+    # Subset to non-school stop times
     st = feed.stop_times
-    feed.stop_times = st[st["trip_id"].isin(feed.trips["trip_id"])].copy()
+    feed.stop_times = st.loc[lambda x: x.trip_id.isin(feed.trips.trip_id)].copy()
 
     return feed
 
-def clean(feed, *, keep_school_routes=False):
+
+def clean(
+    feed: gk.Feed,
+    school_max_ntrips:int=4,
+    school_strings:list[str]=SCHOOL_STRINGS,
+    *,
+    keep_school_routes:bool=False
+) -> gk.Feed:
     """
     Given a GTFSTK object representing an Auckland GTFS feed,
-    optionally drop the school routes (defaults to doing so),
-    aggregate the routes by route short name,
-    drop zombie stops, trips, etc. (via ``gtfs_kit.drop_zombies),
-    clean the stop codes by adding leading zeros where necessary,
-    and return the resulting feed.
+    do the following in order.
+
+    1. Optionally drop its school routes via the function
+       :func:`drop_school_routes` and its associated parameters
+    2. Aggregate the routes by route short name
+    3. Drop zombie stops, trips, etc. via ``gtfs_kit.drop_zombies
+    4. Clean the stop codes by adding leading zeros where necessary
+
+    Then return the resulting feed.
     """
     if not keep_school_routes:
-        feed = drop_school_routes(feed)
+        feed = drop_school_routes(feed, school_max_ntrips, school_strings)
 
     feed = gk.aggregate_routes(feed)
     feed = gk.drop_zombies(feed)
